@@ -1,26 +1,56 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="container">
+        <div class="table">
+            <TableHeader/>
+            <TableRows
+                :sortedData="sortedData"
+            />
+            <Pagination
+                :pagesCount="5"
+            />
+        </div>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterLink, RouterView } from 'vue-router';
+import MainData from './data/MainData.json' assert {type: 'json'};
+import TableHeader from "./components/TableHeader.vue";
+import TableRows from "./components/TableRows.vue";
+import Pagination from "./components/Pagination.vue";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+    components: {
+        TableHeader,
+        TableRows,
+        Pagination
+    },
+    data() {
+        return {
+            tableData: MainData
+        }
+    },
+    computed: {
+        sortedData: function() {
+            return this.tableData;
+        }
+    },
+    created() {
+        if (!Array.isArray(this.tableData)) {
+            this.tableData = [];
+            console.log('Wrong data!');
+        }
+    }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+    .container {
+        width: auto;
+        min-width: 400px;
+        max-width: 1200px;
+        height: fit-content;
+        display: block;
+        margin: auto;
+    }
 </style>
