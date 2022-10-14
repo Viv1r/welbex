@@ -1,40 +1,22 @@
 <template>
     <div class="table__head">
         <div
-            v-for="header of headers"
-            v-on:click="sortBy(header)"
+            v-for="(item, key) in pattern"
+            @click="sortBy(key)"
             class="column_header"
+            :key="key"
         >
-            {{ header.title }}
-            <div v-if="header.sortingAllowed" class="sorting_button">
-                #
-            </div>
+            {{ item.title }}
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            headers: {
-                date: {
-                    title: 'Дата',
-                    sortingAllowed: false
-                },
-                title: {
-                    title: 'Название',
-                    sortingAllowed: true
-                },
-                count: {
-                    title: 'Количество',
-                    sortingAllowed: true
-                },
-                distance: {
-                    title: 'Расстояние',
-                    sortingAllowed: true
-                }
-            }
+    props: {
+        pattern: {
+            type: Object,
+            default: {}
         }
     },
     created() {
