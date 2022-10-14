@@ -1,44 +1,122 @@
 <template>
     <div class="container">
         <div class="table">
-            <TableHeader/>
+            <Filter
+                :pattern="pattern"
+                :filterBy="filterBy"
+                @sortBy="(value) => sortBy = value"
+                @filterBy="(key, value) => {
+                    if (key === 'field' && !value)
+                        filterBy = {};
+                    filterBy[key] = value;
+                }"
+            />
+            <TableHead
+                :pattern="pattern"
+            />
             <TableRows
-                :sortedData="sortedData"
+                :data="readyData.slice((currentPage-1)*10, currentPage*10)"
+                :pattern="pattern"
             />
             <Pagination
-                :pagesCount="5"
+                :pagesCount="pagesCount"
+                :currentPage="currentPage"
+                @setPage="(val) => currentPage = val"
             />
         </div>
     </div>
 </template>
 
 <script>
-import { RouterLink, RouterView } from 'vue-router';
 import MainData from './data/MainData.json' assert {type: 'json'};
-import TableHeader from "./components/TableHeader.vue";
+import TableHead from "./components/TableHead.vue";
 import TableRows from "./components/TableRows.vue";
 import Pagination from "./components/Pagination.vue";
+import Filter from "./components/Filter.vue";
 
 export default {
     components: {
-        TableHeader,
+        TableHead,
         TableRows,
-        Pagination
+        Pagination,
+        Filter
+    },
+    created() {
+        this.ROWS_PER_PAGE = 10;
+
+        if (!Array.isArray(this.rawData)) {
+            this.rawData = [];
+            console.log('Wrong data!');
+        }
     },
     data() {
         return {
-            tableData: MainData
+            rawData: MainData,
+            currentPage: 1,
+            sortBy: null,
+            filterBy: {},
+            pattern: {
+                date: {
+                    title: 'Дата',
+                    sortingAllowed: false
+                },
+                title: {
+                    title: 'Название',
+                    sortingAllowed: true
+                },
+                count: {
+                    title: 'Количество',
+                    sortingAllowed: true
+                },
+                distance: {
+                    title: 'Расстояние',
+                    sortingAllowed: true
+                }
+            }
         }
     },
     computed: {
-        sortedData: function() {
-            return this.tableData;
-        }
-    },
-    created() {
-        if (!Array.isArray(this.tableData)) {
-            this.tableData = [];
-            console.log('Wrong data!');
+        readyData: function() {
+            this.currentPage = 1;
+
+            const sortBy = this.sortBy,
+                  filterBy = this.filterBy;
+
+            const tempData = (() => {
+                if (sortBy === 'default' || !sortBy || !this.pattern[sortBy] || !this.pattern[sortBy].sortingAllowed) {
+                    return this.rawData;
+                }
+                return [...this.rawData].sort((a, b) => {
+                    a = a[sortBy];
+                    b = b[sortBy];
+                    if (typeof(a) === 'string')
+                        a = a.toLowerCase();
+                    if (typeof(b) === 'string')
+                        b = b.toLowerCase();
+                    if (a > b) return 1;
+                    if (a < b) return -1;
+                    return 0;
+                });
+            })();
+
+            const [field, operator, value] = [filterBy.field, filterBy.operator, filterBy.value];
+            if (typeof(filterBy) !== 'object' || !(field && operator && value)) return tempData;
+
+            switch (operator) {
+                case '>':
+                    return tempData.filter(elem => Number(elem[field]) > value);
+                case '<':
+                    return tempData.filter(elem => Number(elem[field]) < value);
+                case '=':
+                    return tempData.filter(elem => elem[field] == value);
+                case '^':
+                    return tempData.filter(elem => String(elem[field]).includes(value));
+                default:
+                    return tempData;
+            }
+        },
+        pagesCount: function() {
+            return Math.ceil(this.readyData.length/this.ROWS_PER_PAGE);
         }
     }
 }

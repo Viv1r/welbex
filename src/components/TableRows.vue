@@ -1,8 +1,12 @@
 <template>
     <div class="table__body">
-        <div class="table__row" v-for="row of sortedData">
-            <div v-for="title of pattern" class="table__cell">
-                {{ row[title] }}
+        <div class="table__row" v-for="row of data">
+            <div
+                v-for="(item, key) in pattern"
+                class="table__cell"
+                :key="key"
+            >
+                {{ row[key] }}
             </div>
         </div>
     </div>
@@ -10,21 +14,15 @@
 
 <script>
 export default {
-    data() {
-        return {
-            pattern: [
-                'date',
-                'title',
-                'count',
-                'distance'
-            ]
-        }
-    },
     props: {
-        sortedData: {
+        data: {
             type: Array,
             default: []
-        }
+        },
+        pattern: {
+            type: Object,
+            default: []
+        },
     }
 }
 </script>
@@ -44,6 +42,7 @@ export default {
         display: grid;
         grid-template-columns: 25% 25% 25% 25%;
         background-color: #e8e8e8;
+        transition: all .15s ease-out;
     }
 
     .table__row:hover {
@@ -52,8 +51,7 @@ export default {
 
     .table__cell {
         display: flex;
-        align-items: center;
-        padding: 12px;
+        padding: 16px 12px 16px 12px;
         text-align: start;
         word-break: break-word;
     }
