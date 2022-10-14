@@ -1,29 +1,10 @@
 # welbex
 
-This template should help get you started developing with Vue 3 in Vite.
+SPA-приложение, реализованное при помощи фреймворка Vue 3.
 
-## Recommended IDE Setup
+Располагает следующими возможностями:
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+- Отображение таблицы из JSON-файла
+- Пагинация и навигация при помощи нижней панели
+- Сортировка по одному из параметров
+- Фильтрация по параметру и условию
