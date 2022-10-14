@@ -15,7 +15,7 @@
                 :pattern="pattern"
             />
             <TableRows
-                :data="readyData.slice((currentPage-1)*10, currentPage*10)"
+                :data="readyData.slice((currentPage-1)*rowsPerPage, currentPage*rowsPerPage)"
                 :pattern="pattern"
             />
             <Pagination
@@ -42,8 +42,6 @@ export default {
         Filter
     },
     created() {
-        this.ROWS_PER_PAGE = 10;
-
         if (!Array.isArray(this.rawData)) {
             this.rawData = [];
             console.log('Wrong data!');
@@ -53,6 +51,7 @@ export default {
         return {
             rawData: MainData,
             currentPage: 1,
+            rowsPerPage: 10,
             sortBy: null,
             filterBy: {},
             pattern: {
@@ -116,7 +115,7 @@ export default {
             }
         },
         pagesCount: function() {
-            return Math.ceil(this.readyData.length/this.ROWS_PER_PAGE);
+            return Math.ceil(this.readyData.length/this.rowsPerPage);
         }
     }
 }
@@ -125,8 +124,8 @@ export default {
 <style scoped>
     .container {
         width: auto;
-        min-width: 400px;
-        max-width: 1200px;
+        min-width: 800px;
+        max-width: 1400px;
         height: fit-content;
         display: block;
         margin: auto;
