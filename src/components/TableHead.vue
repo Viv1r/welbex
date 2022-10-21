@@ -2,7 +2,6 @@
     <div class="table__head">
         <div
             v-for="(item, key) in pattern"
-            @click="sortBy(key)"
             class="column_header"
             :key="key"
         >
@@ -17,15 +16,6 @@ export default {
         pattern: {
             type: Object,
             default: {}
-        }
-    },
-    created() {
-    },
-    methods: {
-        sortBy(header) {
-            if (header.sortingAllowed) {
-                console.log('Sorting!');
-            }
         }
     }
 }
